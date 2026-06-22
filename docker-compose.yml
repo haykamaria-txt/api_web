@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      APP_DB_NAME: laboratorios
+      APP_DB_USER: laboratorios_app
+      APP_DB_PASSWORD: laboratorios_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/db/init/01-create-database.sh:/docker-entrypoint-initdb.d/01-create-database.sh:ro
+      - ./backend/db/init/02-init-tables.sh:/docker-entrypoint-initdb.d/02-init-tables.sh:ro
+      - ./backend/schema.sql:/docker-entrypoint-initdb.d/sql/schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres -d laboratorios"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  app:
+    build: .
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      JWT_SECRET: ${JWT_SECRET:?Defina JWT_SECRET com pelo menos 32 caracteres aleatórios}
+      DATABASE_URL: postgresql://laboratorios_app:laboratorios_app@postgres:5432/laboratorios
+      DB_SSL: "false"
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
