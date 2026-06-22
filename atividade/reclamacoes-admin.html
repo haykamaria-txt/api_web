@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Laboratórios - Reclamações</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <span class="eyebrow">Problemas</span>
+        <h1>Gerenciar reclamações</h1>
+      </div>
+      <a class="button button-secondary" href="index.html" data-logout>Sair</a>
+    </header>
+
+    <div class="app-layout">
+      <aside class="sidebar">
+        <nav class="side-nav" data-nav></nav>
+      </aside>
+
+      <main class="content">
+        <section class="card">
+          <h2>Lista de reclamações</h2>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Laboratório</th>
+                  <th>Problema</th>
+                  <th>Responsável</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="reclamacoes-admin-tabela">
+                <tr><td colspan="6">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

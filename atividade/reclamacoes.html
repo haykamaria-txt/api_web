@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Laboratórios - Reclamações</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <span class="eyebrow">Problemas</span>
+        <h1>Reclamações</h1>
+      </div>
+      <a class="button button-secondary" href="index.html" data-logout>Sair</a>
+    </header>
+
+    <div class="app-layout">
+      <aside class="sidebar">
+        <nav class="side-nav" data-nav></nav>
+      </aside>
+
+      <main class="content">
+        <section class="grid-two">
+          <article class="card">
+            <h2>Nova reclamação</h2>
+            <form class="form-grid" id="reclamacao-form">
+              <label>
+                Laboratório
+                <select id="reclamacao-laboratorio" required></select>
+              </label>
+
+              <label>
+                Tipo de problema
+                <select id="reclamacao-tipo" required>
+                  <option>Computador quebrado</option>
+                  <option>Internet lenta</option>
+                  <option>TV com defeito</option>
+                  <option>Ventilação com problema</option>
+                  <option>Sujeira</option>
+                  <option>Cadeiras quebradas</option>
+                  <option>Outros</option>
+                </select>
+              </label>
+
+              <label class="full-width">
+                Descrição
+                <textarea id="reclamacao-descricao" rows="5" placeholder="Descreva o problema encontrado" required></textarea>
+              </label>
+
+              <button class="button button-primary" type="submit">Registrar reclamação</button>
+            </form>
+          </article>
+
+          <article class="card">
+            <h2>Quando registrar</h2>
+            <ul class="simple-list">
+              <li>Equipamentos indisponíveis ou quebrados.</li>
+              <li>Problemas de internet, energia ou estrutura.</li>
+              <li>Falta de recursos para a aula agendada.</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="card">
+          <h2>Minhas reclamações</h2>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Laboratório</th>
+                  <th>Problema</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="reclamacoes-tabela">
+                <tr><td colspan="4">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

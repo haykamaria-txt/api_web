@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Laboratórios - Início</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <span class="eyebrow">Início</span>
+        <h1>Painel administrativo</h1>
+      </div>
+      <a class="button button-secondary" href="index.html" data-logout>Sair</a>
+    </header>
+
+    <div class="app-layout">
+      <aside class="sidebar">
+        <nav class="side-nav" data-nav></nav>
+      </aside>
+
+      <main class="content">
+        <section class="hero card">
+          <span class="eyebrow">Visão geral</span>
+          <h2>Sistema de Agendamento e Monitoramento de Laboratórios</h2>
+          <p class="section-text">
+            Acompanhe reservas, professores, reclamações e utilização dos
+            laboratórios.
+          </p>
+        </section>
+
+        <section class="stats-grid">
+          <article class="stat-card">
+            <strong data-stat="professores">0</strong>
+            <span>Professores cadastrados</span>
+          </article>
+          <article class="stat-card">
+            <strong data-stat="agendamentosHoje">0</strong>
+            <span>Agendamentos do dia</span>
+          </article>
+          <article class="stat-card">
+            <strong data-stat="reclamacoesAbertas">0</strong>
+            <span>Reclamações abertas</span>
+          </article>
+          <article class="stat-card">
+            <strong data-stat="agendamentosSemana">0</strong>
+            <span>Agendamentos da semana</span>
+          </article>
+          <article class="stat-card">
+            <strong data-stat="itensIndisponiveis">0</strong>
+            <span>Itens indisponíveis</span>
+          </article>
+        </section>
+
+        <section class="card">
+          <h2>Controle de reservas</h2>
+          <p class="section-text">Aprove, rejeite ou cancele reservas futuras.</p>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Professor</th>
+                  <th>Laboratório</th>
+                  <th>Data</th>
+                  <th>Horário</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="reservas-admin-tabela">
+                <tr><td colspan="6">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="grid-two">
+          <article class="card">
+            <h2>Relatório de utilização</h2>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Laboratório</th>
+                    <th>Reservas</th>
+                    <th>Horas</th>
+                  </tr>
+                </thead>
+                <tbody id="relatorio-utilizacao">
+                  <tr><td colspan="3">Carregando...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <h2>Mais utilizados</h2>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Laboratório</th>
+                    <th>Reservas</th>
+                  </tr>
+                </thead>
+                <tbody id="relatorio-ranking">
+                  <tr><td colspan="3">Carregando...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <section class="card">
+          <h2>Resumo de reclamações</h2>
+          <div class="overview-grid" id="relatorio-problemas"></div>
+        </section>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

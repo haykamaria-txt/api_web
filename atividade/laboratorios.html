@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Laboratórios - Laboratórios</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <span class="eyebrow">Laboratórios</span>
+        <h1>Disponibilidade e cadastro</h1>
+      </div>
+      <a class="button button-secondary" href="index.html" data-logout>Sair</a>
+    </header>
+
+    <div class="app-layout">
+      <aside class="sidebar">
+        <nav class="side-nav" data-nav></nav>
+      </aside>
+
+      <main class="content">
+        <section class="grid-two" id="admin-labs-panel" hidden>
+          <article class="card">
+            <h2 id="lab-form-title">Novo laboratório</h2>
+            <form class="form-grid" id="lab-form">
+              <input id="lab-id" type="hidden" />
+
+              <label>
+                Nome
+                <input id="lab-nome" type="text" placeholder="Ex.: Laboratório 05 - Redes" required />
+              </label>
+
+              <label>
+                Tipo
+                <input id="lab-tipo" type="text" placeholder="Ex.: Informática" required />
+              </label>
+
+              <label>
+                Capacidade
+                <input id="lab-capacidade" type="number" min="1" required />
+              </label>
+
+              <label>
+                Localização
+                <input id="lab-localizacao" type="text" placeholder="Ex.: Bloco A" required />
+              </label>
+
+              <label>
+                Recursos
+                <input id="lab-recursos" type="text" placeholder="Computadores, Projetor, Internet" />
+              </label>
+
+              <div class="form-actions">
+                <button class="button button-primary" id="lab-submit" type="submit">Salvar laboratório</button>
+                <button class="button button-secondary" id="lab-cancelar-edicao" type="button" hidden>Cancelar</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="card">
+            <h2>Laboratórios cadastrados</h2>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Capacidade</th>
+                    <th>Local</th>
+                    <th>Recursos</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="labs-admin-tabela">
+                  <tr><td colspan="6">Carregando...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <section class="card">
+          <h2>Consultar laboratórios</h2>
+          <p class="section-text">Filtre os ambientes pela capacidade mínima da turma.</p>
+          <form class="filter-bar" id="laboratorios-filtro">
+            <label class="filter-field">
+              Capacidade mínima
+              <input id="laboratorios-capacidade" type="number" min="1" placeholder="Ex.: 25" />
+            </label>
+            <button class="button button-primary" type="submit">Filtrar</button>
+          </form>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Laboratório</th>
+                  <th>Tipo</th>
+                  <th>Capacidade</th>
+                  <th>Localização</th>
+                  <th>Recursos</th>
+                </tr>
+              </thead>
+              <tbody id="laboratorios-lista">
+                <tr><td colspan="5">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Mapa geral dos laboratórios</h2>
+          <p class="section-text">
+            Consulte os horários livres e ocupados de cada laboratório entre 7h
+            e 18h.
+          </p>
+          <form class="filter-bar">
+            <label class="filter-field">
+              Data
+              <input id="calendario-data" type="date" />
+            </label>
+          </form>
+          <div class="table-wrapper table-wrapper-wide">
+            <table class="schedule-table">
+              <thead>
+                <tr>
+                  <th>Laboratório</th>
+                  <th>07h-07h30</th>
+                  <th>07h30-08h</th>
+                  <th>08h-08h30</th>
+                  <th>08h30-09h</th>
+                  <th>09h-09h30</th>
+                  <th>09h30-10h</th>
+                  <th>10h-10h30</th>
+                  <th>10h30-11h</th>
+                  <th>11h-11h30</th>
+                  <th>11h30-12h</th>
+                  <th>12h-12h30</th>
+                  <th>12h30-13h</th>
+                  <th>13h-13h30</th>
+                  <th>13h30-14h</th>
+                  <th>14h-14h30</th>
+                  <th>14h30-15h</th>
+                  <th>15h-15h30</th>
+                  <th>15h30-16h</th>
+                  <th>16h-16h30</th>
+                  <th>16h30-17h</th>
+                  <th>17h-17h30</th>
+                  <th>17h30-18h</th>
+                </tr>
+              </thead>
+              <tbody id="calendario-tabela">
+                <tr><td colspan="23">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

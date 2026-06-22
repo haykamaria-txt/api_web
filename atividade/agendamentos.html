@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Laboratórios - Agendamentos</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <span class="eyebrow">Agendamento</span>
+        <h1>Meus agendamentos</h1>
+      </div>
+      <a class="button button-secondary" href="index.html" data-logout>Sair</a>
+    </header>
+
+    <div class="app-layout">
+      <aside class="sidebar">
+        <nav class="side-nav" data-nav></nav>
+      </aside>
+
+      <main class="content">
+        <section class="card recommendation-card">
+          <span class="eyebrow">Recomendação</span>
+          <h2>Horário e laboratório frequentes</h2>
+          <p class="section-text">
+            Use uma sugestão baseada no seu histórico recente para preencher o
+            formulário.
+          </p>
+          <div class="recommendation-box">
+            <div>
+              <strong>Carregando...</strong>
+              <p>A sugestao aparecera aqui.</p>
+            </div>
+            <button class="button button-primary" type="button" data-fill-recommendation>
+              Usar recomendação
+            </button>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2 id="agendamento-form-title">Novo agendamento</h2>
+          <p class="section-text">
+            Reservas respeitam disponibilidade, capacidade e antecedência mínima
+            de 3 dias.
+          </p>
+          <form class="form-grid form-grid-two" id="agendamento-form">
+            <label>
+              Data
+              <input id="agendamento-data" type="date" required />
+            </label>
+
+            <label>
+              Hora de início
+              <input id="agendamento-inicio" type="time" required />
+            </label>
+
+            <label>
+              Hora de término
+              <input id="agendamento-termino" type="time" required />
+            </label>
+
+            <label>
+              Quantidade de alunos
+              <input id="agendamento-alunos" type="number" min="1" placeholder="Ex.: 25" required />
+            </label>
+
+            <label class="full-width">
+              Laboratório
+              <select id="agendamento-laboratorio" required></select>
+            </label>
+
+            <label class="full-width">
+              Observação
+              <textarea id="agendamento-observacao" rows="3" placeholder="Ex.: Aula prática"></textarea>
+            </label>
+
+            <div class="form-actions full-width">
+              <button class="button button-primary" id="agendamento-submit" type="submit">
+                Salvar agendamento
+              </button>
+              <button class="button button-secondary" id="agendamento-cancelar-edicao" type="button" hidden>
+                Cancelar edição
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Lista de agendamentos</h2>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Laboratório</th>
+                  <th>Data</th>
+                  <th>Horário</th>
+                  <th>Status</th>
+                  <th>Observação</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="agendamentos-tabela">
+                <tr><td colspan="6">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

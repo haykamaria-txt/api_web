@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Laboratórios - Professores</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <span class="eyebrow">Usuários</span>
+        <h1>Professores</h1>
+      </div>
+      <a class="button button-secondary" href="index.html" data-logout>Sair</a>
+    </header>
+
+    <div class="app-layout">
+      <aside class="sidebar">
+        <nav class="side-nav" data-nav></nav>
+      </aside>
+
+      <main class="content">
+        <section class="grid-two">
+          <article class="card">
+            <h2>Novo professor</h2>
+            <p class="section-text">
+              Cadastre professores por matrícula institucional.
+            </p>
+
+            <form class="form-grid" id="professor-form">
+              <label>
+                Nome completo
+                <input id="professor-nome" type="text" placeholder="Ex.: Maria Silva" required />
+              </label>
+
+              <label>
+                Matrícula
+                <input id="professor-matricula" type="text" placeholder="Ex.: 2026001" required />
+              </label>
+
+              <label>
+                Curso
+                <input id="professor-curso" type="text" placeholder="Ex.: Informática" required />
+              </label>
+
+              <label>
+                Senha
+                <input id="professor-senha" type="password" placeholder="Defina uma senha" required />
+              </label>
+
+              <button class="button button-primary" type="submit">Salvar cadastro</button>
+            </form>
+          </article>
+
+          <article class="card">
+            <h2>Regras aplicadas</h2>
+            <ul class="simple-list">
+              <li>Cada professor possui uma matrícula única.</li>
+              <li>Senhas são armazenadas com hash criptográfico.</li>
+              <li>Apenas administradores podem gerenciar usuários.</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="card">
+          <h2>Lista de professores</h2>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Matrícula</th>
+                  <th>Professor</th>
+                  <th>Curso</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="professores-tabela">
+                <tr><td colspan="4">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

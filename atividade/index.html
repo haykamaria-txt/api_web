@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Laboratórios - Login</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="auth-body">
+    <main class="auth-layout">
+      <section class="auth-panel auth-panel-highlight">
+        <div class="auth-copy">
+          <span class="eyebrow">Acesso ao sistema</span>
+          <h1>Sistema de Laboratórios</h1>
+          <p>
+            Organize reservas, disponibilidade, problemas e relatórios dos
+            laboratórios acadêmicos em uma única aplicação.
+          </p>
+
+          <div class="info-grid">
+            <article class="info-card">
+              <h2>Professores</h2>
+              <p>Cadastro por matrícula institucional.</p>
+            </article>
+            <article class="info-card">
+              <h2>Reservas</h2>
+              <p>Agendamento com antecedência mínima e bloqueio de conflitos.</p>
+            </article>
+            <article class="info-card">
+              <h2>Administração</h2>
+              <p>Gestão de laboratórios, reclamações e relatórios.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="auth-panel">
+        <div class="card">
+          <h2>Entrar</h2>
+          <p class="section-text">
+            Digite sua matrícula e senha para acessar o sistema.
+          </p>
+
+          <form class="form-grid" id="login-form">
+            <label>
+              Matrícula
+              <input id="login-matricula" type="text" placeholder="Ex.: 2026001" autocomplete="username" required />
+            </label>
+
+            <label>
+              Senha
+              <input id="login-senha" type="password" placeholder="Digite sua senha" autocomplete="current-password" required />
+            </label>
+
+            <div class="button-stack">
+              <button class="button button-primary" type="button" data-login-role="admin">
+                Entrar como admin
+              </button>
+              <button class="button button-secondary" type="button" data-login-role="professor">
+                Entrar como professor
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>

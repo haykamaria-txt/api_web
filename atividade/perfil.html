@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Laboratórios - Perfil</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <span class="eyebrow">Perfil</span>
+        <h1>Meus dados</h1>
+      </div>
+      <a class="button button-secondary" href="index.html" data-logout>Sair</a>
+    </header>
+
+    <div class="app-layout">
+      <aside class="sidebar">
+        <nav class="side-nav" data-nav></nav>
+      </aside>
+
+      <main class="content">
+        <section class="card">
+          <h2>Dados pessoais</h2>
+          <p class="section-text">
+            Atualize nome, curso e senha. A matrícula e o perfil permanecem
+            vinculados ao cadastro.
+          </p>
+
+          <form class="form-grid form-grid-two" id="perfil-form">
+            <label>
+              Nome
+              <input id="perfil-nome" type="text" required />
+            </label>
+
+            <label>
+              Matrícula
+              <input id="perfil-matricula" type="text" disabled />
+            </label>
+
+            <label>
+              Curso
+              <input id="perfil-curso" type="text" required />
+            </label>
+
+            <label>
+              Perfil
+              <input id="perfil-role" type="text" disabled />
+            </label>
+
+            <label class="full-width">
+              Nova senha
+              <input id="perfil-senha" type="password" placeholder="Preencha apenas se quiser alterar" />
+            </label>
+
+            <button class="button button-primary" type="submit">Salvar perfil</button>
+          </form>
+        </section>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

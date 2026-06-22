@@ -1,0 +1,46 @@
+# Dependências
+node_modules/
+
+# Variáveis de ambiente e segredos
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+backend/*.log
+backend/server.log
+backend/server.err.log
+
+# Dados locais / temporários
+backend/data/
+*.tmp
+*.temp
+
+# Docker local / caches
+.docker/
+docker-data/
+postgres-data/
+pgdata/
+
+# Build / cache
+dist/
+build/
+coverage/
+.cache/
+.vite/
+
+# Sistema operacional / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Git interno acidental em zips/cópias
+.git/
