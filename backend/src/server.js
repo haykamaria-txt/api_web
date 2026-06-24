@@ -5,13 +5,18 @@ import swaggerUi from "swagger-ui-express";
 import { fileURLToPath } from "url";
 import { config } from "./config.js";
 import { openapiSpec } from "./openapi.js";
+import {
+  activeReservationStatuses,
+  hasReservationConflict,
+  minutesFromTime,
+  overlaps,
+} from "./reservation-rules.js";
 import { createStore } from "./store.js";
 import { createToken, hashPassword, verifyPassword, verifyToken } from "./security.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const frontendPath = path.resolve(__dirname, "../../atividade");
-const activeReservationStatuses = new Set(["pendente", "aprovada"]);
 
 class HttpError extends Error {
   constructor(status, message) {
@@ -34,18 +39,6 @@ function publicUser(user) {
   if (!user) return null;
   const { passwordHash, ...safeUser } = user;
   return safeUser;
-}
-
-function minutesFromTime(time) {
-  const [hours, minutes] = String(time).split(":").map(Number);
-  return hours * 60 + minutes;
-}
-
-function overlaps(firstStart, firstEnd, secondStart, secondEnd) {
-  return (
-    minutesFromTime(firstStart) < minutesFromTime(secondEnd) &&
-    minutesFromTime(firstEnd) > minutesFromTime(secondStart)
-  );
 }
 
 function todayAtMidnight() {
@@ -207,10 +200,11 @@ async function createApp() {
     }
 
     const reservations = await store.listReservations({ labId, data });
-    const hasConflict = reservations.some((reservation) => {
-      if (Number(reservation.id) === Number(ignoreReservationId)) return false;
-      if (!activeReservationStatuses.has(reservation.status)) return false;
-      return overlaps(inicio, termino, reservation.inicio, reservation.termino);
+    const hasConflict = hasReservationConflict({
+      reservations,
+      inicio,
+      termino,
+      ignoreReservationId,
     });
 
     if (hasConflict)
