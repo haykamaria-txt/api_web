@@ -808,7 +808,7 @@ curl -X POST http://localhost:3000/reservas \
 
 - A persistência oficial é exclusivamente PostgreSQL.
 - `DATABASE_URL` e `JWT_SECRET` são obrigatórias.
-- Senhas são armazenadas com hash `scrypt` e salt aleatório.
+- Senhas são armazenadas com hash `bcrypt` usando 12 salt rounds.
 - Rotas protegidas usam JWT no cabecalho `Authorization`.
 - O cadastro, a edição e o cancelamento respeitam as permissões de professor e administrador.
 - A criação de reserva possui proteção transacional contra requisições concorrentes.

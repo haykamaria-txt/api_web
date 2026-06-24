@@ -1,7 +1,7 @@
+import bcrypt from "bcrypt";
 import crypto from "crypto";
-import { promisify } from "util";
 
-const scrypt = promisify(crypto.scrypt);
+const BCRYPT_SALT_ROUNDS = 12;
 
 function base64Url(input) {
   return Buffer.from(input).toString("base64url");
@@ -55,15 +55,15 @@ export function verifyToken(token, secret) {
 }
 
 export async function hashPassword(password) {
-  const salt = crypto.randomBytes(16).toString("hex");
-  const hash = await scrypt(password, salt, 64);
-  return `scrypt$${salt}$${hash.toString("hex")}`;
+  return bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
 }
 
 export async function verifyPassword(password, storedHash) {
-  const [algorithm, salt, hash] = storedHash.split("$");
-  if (algorithm !== "scrypt" || !salt || !hash) return false;
+  if (typeof storedHash !== "string" || !storedHash.startsWith("$2")) return false;
 
-  const passwordHash = await scrypt(password, salt, 64);
-  return crypto.timingSafeEqual(Buffer.from(hash, "hex"), passwordHash);
+  try {
+    return await bcrypt.compare(password, storedHash);
+  } catch {
+    return false;
+  }
 }

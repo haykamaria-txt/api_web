@@ -43,8 +43,14 @@ describe("segurança e autenticação", () => {
     const firstHash = await hashPassword("senha-forte");
     const secondHash = await hashPassword("senha-forte");
 
+    expect(firstHash).toMatch(/^\$2[aby]\$12\$/);
     expect(firstHash).not.toBe(secondHash);
     await expect(verifyPassword("senha-forte", firstHash)).resolves.toBe(true);
     await expect(verifyPassword("senha-incorreta", firstHash)).resolves.toBe(false);
+  });
+
+  it("rejeita hashes inválidos ou do formato antigo", async () => {
+    await expect(verifyPassword("senha-forte", "hash-invalido")).resolves.toBe(false);
+    await expect(verifyPassword("senha-forte", "scrypt$salt$hash-antigo")).resolves.toBe(false);
   });
 });

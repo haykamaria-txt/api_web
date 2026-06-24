@@ -104,6 +104,7 @@ Consulte [docs/API.md](docs/API.md) para:
 
 - execução com Docker e configuração das variáveis obrigatórias;
 - autenticação JWT e credenciais de demonstração acadêmica;
+- senhas protegidas com bcrypt usando 12 salt rounds;
 - lista completa de endpoints e permissões;
 - payloads e respostas de exemplo;
 - códigos de erro;
