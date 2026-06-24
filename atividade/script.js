@@ -1,9 +1,16 @@
-const API_BASE = window.location.protocol === "file:" ? "http://localhost:3000" : window.location.origin;
+const API_BASE =
+  window.location.protocol === "file:" ? "http://localhost:3000" : window.location.origin;
 const TOKEN_KEY = "laboratorios_token";
 const USER_KEY = "laboratorios_usuario";
 const page = window.location.pathname.split("/").pop() || "index.html";
 const adminPages = new Set(["dashboard.html", "professores.html", "reclamacoes-admin.html"]);
-const professorPages = new Set(["agendamentos.html", "reclamacoes.html", "controle.html", "checkout.html", "inventario.html"]);
+const professorPages = new Set([
+  "agendamentos.html",
+  "reclamacoes.html",
+  "controle.html",
+  "checkout.html",
+  "inventario.html",
+]);
 
 document.addEventListener("DOMContentLoaded", () => {
   init().catch((error) => showPageMessage(error.message, "error"));
@@ -79,26 +86,29 @@ function renderNavigation() {
   const nav = document.querySelector("[data-nav]");
   if (!nav) return;
   const user = getUser();
-  const links = user.role === "admin"
-    ? [
-      ["dashboard.html", "Início"],
-      ["professores.html", "Professores"],
-      ["laboratorios.html", "Laboratórios"],
-      ["reclamacoes-admin.html", "Reclamações"],
-      ["perfil.html", "Perfil"],
-    ]
-    : [
-      ["agendamentos.html", "Agendamentos"],
-      ["laboratorios.html", "Laboratórios"],
-      ["reclamacoes.html", "Reclamações"],
-      ["inventario.html", "Inventário"],
-      ["controle.html", "Check-in"],
-      ["checkout.html", "Check-out"],
-      ["perfil.html", "Perfil"],
-    ];
+  const links =
+    user.role === "admin"
+      ? [
+          ["dashboard.html", "Início"],
+          ["professores.html", "Professores"],
+          ["laboratorios.html", "Laboratórios"],
+          ["reclamacoes-admin.html", "Reclamações"],
+          ["perfil.html", "Perfil"],
+        ]
+      : [
+          ["agendamentos.html", "Agendamentos"],
+          ["laboratorios.html", "Laboratórios"],
+          ["reclamacoes.html", "Reclamações"],
+          ["inventario.html", "Inventário"],
+          ["controle.html", "Check-in"],
+          ["checkout.html", "Check-out"],
+          ["perfil.html", "Perfil"],
+        ];
 
   nav.innerHTML = links
-    .map(([href, label]) => `<a class="${href === page ? "active" : ""}" href="${href}">${label}</a>`)
+    .map(
+      ([href, label]) => `<a class="${href === page ? "active" : ""}" href="${href}">${label}</a>`,
+    )
     .join("");
 }
 
@@ -185,7 +195,8 @@ async function initPerfil() {
   document.querySelector("#perfil-nome").value = usuario.nome || "";
   document.querySelector("#perfil-matricula").value = usuario.matricula || "";
   document.querySelector("#perfil-curso").value = usuario.curso || "";
-  document.querySelector("#perfil-role").value = usuario.role === "admin" ? "Administrador" : "Professor";
+  document.querySelector("#perfil-role").value =
+    usuario.role === "admin" ? "Administrador" : "Professor";
 
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -209,11 +220,7 @@ async function initPerfil() {
 }
 
 async function initDashboard() {
-  await Promise.all([
-    loadDashboardResumo(),
-    loadAdminReservations(),
-    loadReports(),
-  ]);
+  await Promise.all([loadDashboardResumo(), loadAdminReservations(), loadReports()]);
 }
 
 async function loadDashboardResumo() {
@@ -229,7 +236,9 @@ async function loadAdminReservations() {
   if (!table) return;
 
   const { historico } = await api("/relatorios/historico");
-  table.innerHTML = historico.map((reserva) => `
+  table.innerHTML = historico
+    .map(
+      (reserva) => `
     <tr>
       <td>${escapeHtml(reserva.professor?.nome || "-")}</td>
       <td>${escapeHtml(reserva.laboratorio?.nome || "-")}</td>
@@ -250,7 +259,9 @@ async function loadAdminReservations() {
         </div>
       </td>
     </tr>
-  `).join("");
+  `,
+    )
+    .join("");
 
   table.querySelectorAll("[data-approve-reservation]").forEach((button) => {
     button.addEventListener("click", async () => {
@@ -284,24 +295,33 @@ async function loadReports() {
 
   const utilizacaoTable = document.querySelector("#relatorio-utilizacao");
   if (utilizacaoTable) {
-    utilizacaoTable.innerHTML = utilizacao.utilizacao.map((item) => `
+    utilizacaoTable.innerHTML = utilizacao.utilizacao
+      .map(
+        (item) => `
       <tr>
         <td>${escapeHtml(item.laboratorio.nome)}</td>
         <td>${item.totalReservas}</td>
         <td>${item.horasUtilizadas}</td>
       </tr>
-    `).join("");
+    `,
+      )
+      .join("");
   }
 
   const rankingTable = document.querySelector("#relatorio-ranking");
   if (rankingTable) {
-    rankingTable.innerHTML = maisUtilizados.laboratorios.slice(0, 5).map((item, index) => `
+    rankingTable.innerHTML = maisUtilizados.laboratorios
+      .slice(0, 5)
+      .map(
+        (item, index) => `
       <tr>
         <td>${index + 1}</td>
         <td>${escapeHtml(item.laboratorio.nome)}</td>
         <td>${item.totalReservas}</td>
       </tr>
-    `).join("");
+    `,
+      )
+      .join("");
   }
 
   const problemSummary = document.querySelector("#relatorio-problemas");
@@ -349,7 +369,8 @@ async function loadProfessores() {
   const { usuarios } = await api("/usuarios");
   table.innerHTML = usuarios
     .filter((usuario) => usuario.role === "professor")
-    .map((usuario) => `
+    .map(
+      (usuario) => `
       <tr>
         <td>${escapeHtml(usuario.matricula)}</td>
         <td>${escapeHtml(usuario.nome)}</td>
@@ -362,7 +383,8 @@ async function loadProfessores() {
           </div>
         </td>
       </tr>
-    `)
+    `,
+    )
     .join("");
 
   table.querySelectorAll("[data-delete-user]").forEach((button) => {
@@ -389,7 +411,8 @@ async function initAgendamentos() {
     document.querySelector("#agendamento-data").value = recommendationButton.dataset.date || "";
     document.querySelector("#agendamento-inicio").value = recommendationButton.dataset.start || "";
     document.querySelector("#agendamento-termino").value = recommendationButton.dataset.end || "";
-    document.querySelector("#agendamento-laboratorio").value = recommendationButton.dataset.labId || "";
+    document.querySelector("#agendamento-laboratorio").value =
+      recommendationButton.dataset.labId || "";
   });
 
   cancelEditButton?.addEventListener("click", () => resetAgendamentoForm(form));
@@ -444,14 +467,17 @@ async function loadRecommendation() {
   const title = box?.querySelector("strong");
   const text = box?.querySelector("p");
   if (title) title.textContent = recomendacao.laboratorio.nome;
-  if (text) text.textContent = `Data sugerida: ${formatDate(recomendacao.data)}, das ${recomendacao.inicio} às ${recomendacao.termino}.`;
+  if (text)
+    text.textContent = `Data sugerida: ${formatDate(recomendacao.data)}, das ${recomendacao.inicio} às ${recomendacao.termino}.`;
 }
 
 async function loadAgendamentos() {
   const table = document.querySelector("#agendamentos-tabela");
   if (!table) return;
   const { reservas } = await api("/reservas");
-  table.innerHTML = reservas.map((reserva) => `
+  table.innerHTML = reservas
+    .map(
+      (reserva) => `
     <tr>
       <td>${escapeHtml(reserva.laboratorio?.nome || "-")}</td>
       <td>${formatDate(reserva.data)}</td>
@@ -470,7 +496,9 @@ async function loadAgendamentos() {
         </div>
       </td>
     </tr>
-  `).join("");
+  `,
+    )
+    .join("");
 
   table.querySelectorAll("[data-edit-reservation]").forEach((button) => {
     button.addEventListener("click", async () => {
@@ -531,8 +559,9 @@ function initLabForm() {
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const labId = document.querySelector("#lab-id").value;
-    const recursos = document.querySelector("#lab-recursos").value
-      .split(",")
+    const recursos = document
+      .querySelector("#lab-recursos")
+      .value.split(",")
       .map((item) => item.trim())
       .filter(Boolean);
 
@@ -568,7 +597,9 @@ async function loadLabManagement() {
   const table = document.querySelector("#labs-admin-tabela");
   if (!table) return;
   const { laboratorios } = await api("/labs");
-  table.innerHTML = laboratorios.map((lab) => `
+  table.innerHTML = laboratorios
+    .map(
+      (lab) => `
     <tr>
       <td>${escapeHtml(lab.nome)}</td>
       <td>${escapeHtml(lab.tipo)}</td>
@@ -586,7 +617,9 @@ async function loadLabManagement() {
         </div>
       </td>
     </tr>
-  `).join("");
+  `,
+    )
+    .join("");
 
   table.querySelectorAll("[data-edit-lab]").forEach((button) => {
     button.addEventListener("click", async () => {
@@ -619,7 +652,9 @@ async function loadLaboratoriosLista() {
   const capacidade = document.querySelector("#laboratorios-capacidade")?.value;
   const query = capacidade ? `?capacidade=${encodeURIComponent(capacidade)}` : "";
   const { laboratorios } = await api(`/labs${query}`);
-  table.innerHTML = laboratorios.map((lab) => `
+  table.innerHTML = laboratorios
+    .map(
+      (lab) => `
     <tr>
       <td>${escapeHtml(lab.nome)}</td>
       <td>${escapeHtml(lab.tipo)}</td>
@@ -627,7 +662,9 @@ async function loadLaboratoriosLista() {
       <td>${escapeHtml(lab.localizacao)}</td>
       <td>${escapeHtml((lab.recursos || []).join(", ") || "-")}</td>
     </tr>
-  `).join("");
+  `,
+    )
+    .join("");
 }
 
 async function loadCalendario() {
@@ -636,16 +673,24 @@ async function loadCalendario() {
   if (!table || !date) return;
 
   const { laboratorios } = await api(`/calendario?data=${encodeURIComponent(date)}`);
-  table.innerHTML = laboratorios.map((item) => `
+  table.innerHTML = laboratorios
+    .map(
+      (item) => `
     <tr>
       <td>${escapeHtml(item.laboratorio.nome)}</td>
-      ${item.slots.map((slot) => `
+      ${item.slots
+        .map(
+          (slot) => `
         <td class="${slot.status === "livre" ? "slot-free" : "slot-busy"}">
           ${slot.status === "livre" ? "Livre" : "Ocupado"}
         </td>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </tr>
-  `).join("");
+  `,
+    )
+    .join("");
 }
 
 async function initReclamacoes() {
@@ -679,14 +724,18 @@ async function loadMinhasReclamacoes() {
   const table = document.querySelector("#reclamacoes-tabela");
   if (!table) return;
   const { problemas } = await api("/problemas");
-  table.innerHTML = problemas.map((problema) => `
+  table.innerHTML = problemas
+    .map(
+      (problema) => `
     <tr>
       <td>${formatDate(problema.createdAt?.slice(0, 10))}</td>
       <td>${escapeHtml(problema.laboratorio?.nome || "-")}</td>
       <td>${escapeHtml(problema.tipo)}</td>
       <td>${statusTag(problema.status)}</td>
     </tr>
-  `).join("");
+  `,
+    )
+    .join("");
 }
 
 async function initReclamacoesAdmin() {
@@ -697,7 +746,9 @@ async function loadReclamacoesAdmin() {
   const table = document.querySelector("#reclamacoes-admin-tabela");
   if (!table) return;
   const { problemas } = await api("/problemas");
-  table.innerHTML = problemas.map((problema) => `
+  table.innerHTML = problemas
+    .map(
+      (problema) => `
     <tr>
       <td>${formatDate(problema.createdAt?.slice(0, 10))}</td>
       <td>${escapeHtml(problema.laboratorio?.nome || "-")}</td>
@@ -715,7 +766,9 @@ async function loadReclamacoesAdmin() {
         </div>
       </td>
     </tr>
-  `).join("");
+  `,
+    )
+    .join("");
 
   table.querySelectorAll("[data-resolve-problem]").forEach((button) => {
     button.addEventListener("click", async () => {
@@ -748,7 +801,9 @@ async function loadInventario() {
     groups.get(key).itens.push(item);
   });
 
-  container.innerHTML = [...groups.values()].map((group) => `
+  container.innerHTML = [...groups.values()]
+    .map(
+      (group) => `
     <article class="card">
       <h2>${escapeHtml(group.laboratorio?.nome || "Laboratório")}</h2>
       <div class="table-wrapper">
@@ -761,18 +816,24 @@ async function loadInventario() {
             </tr>
           </thead>
           <tbody>
-            ${group.itens.map((item) => `
+            ${group.itens
+              .map(
+                (item) => `
               <tr>
                 <td>${escapeHtml(item.item)}</td>
                 <td>${item.disponivel}</td>
                 <td>${item.indisponivel}</td>
               </tr>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tbody>
         </table>
       </div>
     </article>
-  `).join("");
+  `,
+    )
+    .join("");
 }
 
 async function initAcesso(tipo) {

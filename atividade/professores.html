@@ -24,9 +24,7 @@
         <section class="grid-two">
           <article class="card">
             <h2>Novo professor</h2>
-            <p class="section-text">
-              Cadastre professores por matrícula institucional.
-            </p>
+            <p class="section-text">Cadastre professores por matrícula institucional.</p>
 
             <form class="form-grid" id="professor-form">
               <label>
@@ -46,7 +44,12 @@
 
               <label>
                 Senha
-                <input id="professor-senha" type="password" placeholder="Defina uma senha" required />
+                <input
+                  id="professor-senha"
+                  type="password"
+                  placeholder="Defina uma senha"
+                  required
+                />
               </label>
 
               <button class="button button-primary" type="submit">Salvar cadastro</button>
@@ -76,7 +79,9 @@
                 </tr>
               </thead>
               <tbody id="professores-tabela">
-                <tr><td colspan="4">Carregando...</td></tr>
+                <tr>
+                  <td colspan="4">Carregando...</td>
+                </tr>
               </tbody>
             </table>
           </div>

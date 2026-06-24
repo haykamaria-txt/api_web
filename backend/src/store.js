@@ -117,14 +117,34 @@ class PostgresStore {
         await client.query(
           `INSERT INTO usuarios (id, nome, matricula, curso, perfil, senha_hash, ativo, created_at, updated_at)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-          [user.id, user.nome, user.matricula, user.curso, user.role, user.passwordHash, user.ativo, user.createdAt, user.updatedAt],
+          [
+            user.id,
+            user.nome,
+            user.matricula,
+            user.curso,
+            user.role,
+            user.passwordHash,
+            user.ativo,
+            user.createdAt,
+            user.updatedAt,
+          ],
         );
       }
       for (const lab of seed.labs) {
         await client.query(
           `INSERT INTO laboratorios (id, nome, tipo, capacidade, localizacao, recursos, ativo, created_at, updated_at)
            VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7, $8, $9)`,
-          [lab.id, lab.nome, lab.tipo, lab.capacidade, lab.localizacao, JSON.stringify(lab.recursos), lab.ativo, lab.createdAt, lab.updatedAt],
+          [
+            lab.id,
+            lab.nome,
+            lab.tipo,
+            lab.capacidade,
+            lab.localizacao,
+            JSON.stringify(lab.recursos),
+            lab.ativo,
+            lab.createdAt,
+            lab.updatedAt,
+          ],
         );
       }
       for (const reservation of seed.reservations) {
@@ -150,21 +170,48 @@ class PostgresStore {
         await client.query(
           `INSERT INTO problemas (id, laboratorio_id, usuario_id, tipo, descricao, status, created_at, updated_at)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-          [problem.id, problem.labId, problem.userId, problem.tipo, problem.descricao, problem.status, problem.createdAt, problem.updatedAt],
+          [
+            problem.id,
+            problem.labId,
+            problem.userId,
+            problem.tipo,
+            problem.descricao,
+            problem.status,
+            problem.createdAt,
+            problem.updatedAt,
+          ],
         );
       }
       for (const item of seed.inventory) {
         await client.query(
           `INSERT INTO inventario (id, laboratorio_id, item, disponivel, indisponivel, created_at, updated_at)
            VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-          [item.id, item.labId, item.item, item.disponivel, item.indisponivel, item.createdAt, item.updatedAt],
+          [
+            item.id,
+            item.labId,
+            item.item,
+            item.disponivel,
+            item.indisponivel,
+            item.createdAt,
+            item.updatedAt,
+          ],
         );
       }
-      await client.query("SELECT setval(pg_get_serial_sequence('usuarios', 'id'), (SELECT MAX(id) FROM usuarios))");
-      await client.query("SELECT setval(pg_get_serial_sequence('laboratorios', 'id'), (SELECT MAX(id) FROM laboratorios))");
-      await client.query("SELECT setval(pg_get_serial_sequence('reservas', 'id'), (SELECT MAX(id) FROM reservas))");
-      await client.query("SELECT setval(pg_get_serial_sequence('problemas', 'id'), (SELECT MAX(id) FROM problemas))");
-      await client.query("SELECT setval(pg_get_serial_sequence('inventario', 'id'), (SELECT MAX(id) FROM inventario))");
+      await client.query(
+        "SELECT setval(pg_get_serial_sequence('usuarios', 'id'), (SELECT MAX(id) FROM usuarios))",
+      );
+      await client.query(
+        "SELECT setval(pg_get_serial_sequence('laboratorios', 'id'), (SELECT MAX(id) FROM laboratorios))",
+      );
+      await client.query(
+        "SELECT setval(pg_get_serial_sequence('reservas', 'id'), (SELECT MAX(id) FROM reservas))",
+      );
+      await client.query(
+        "SELECT setval(pg_get_serial_sequence('problemas', 'id'), (SELECT MAX(id) FROM problemas))",
+      );
+      await client.query(
+        "SELECT setval(pg_get_serial_sequence('inventario', 'id'), (SELECT MAX(id) FROM inventario))",
+      );
       await client.query("COMMIT");
     } catch (error) {
       await client.query("ROLLBACK");
@@ -260,7 +307,13 @@ class PostgresStore {
        VALUES ($1, $2, $3, $4, $5::jsonb)
        RETURNING id, nome, tipo, capacidade, localizacao, recursos, ativo,
                  created_at AS "createdAt", updated_at AS "updatedAt"`,
-      [input.nome, input.tipo, input.capacidade, input.localizacao, JSON.stringify(input.recursos || [])],
+      [
+        input.nome,
+        input.tipo,
+        input.capacidade,
+        input.localizacao,
+        JSON.stringify(input.recursos || []),
+      ],
     );
     return mapLab(rows[0]);
   }
@@ -275,7 +328,15 @@ class PostgresStore {
        WHERE id = $7
        RETURNING id, nome, tipo, capacidade, localizacao, recursos, ativo,
                  created_at AS "createdAt", updated_at AS "updatedAt"`,
-      [next.nome, next.tipo, next.capacidade, next.localizacao, JSON.stringify(next.recursos || []), next.ativo, id],
+      [
+        next.nome,
+        next.tipo,
+        next.capacidade,
+        next.localizacao,
+        JSON.stringify(next.recursos || []),
+        next.ativo,
+        id,
+      ],
     );
     return mapLab(rows[0]);
   }
@@ -330,10 +391,10 @@ class PostgresStore {
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
-      await client.query(
-        "SELECT pg_advisory_xact_lock($1::integer, hashtext($2::text))",
-        [input.labId, input.data],
-      );
+      await client.query("SELECT pg_advisory_xact_lock($1::integer, hashtext($2::text))", [
+        input.labId,
+        input.data,
+      ]);
 
       const { rowCount } = await client.query(
         `SELECT 1
@@ -359,7 +420,16 @@ class PostgresStore {
          RETURNING id, usuario_id AS "userId", laboratorio_id AS "labId", data, inicio, termino,
                    quantidade_alunos AS "quantidadeAlunos", status, observacao,
                    created_at AS "createdAt", updated_at AS "updatedAt"`,
-        [input.userId, input.labId, input.data, input.inicio, input.termino, input.quantidadeAlunos, input.status || "aprovada", input.observacao || ""],
+        [
+          input.userId,
+          input.labId,
+          input.data,
+          input.inicio,
+          input.termino,
+          input.quantidadeAlunos,
+          input.status || "aprovada",
+          input.observacao || "",
+        ],
       );
       await client.query("COMMIT");
       return mapReservation(rows[0]);
@@ -383,7 +453,17 @@ class PostgresStore {
        RETURNING id, usuario_id AS "userId", laboratorio_id AS "labId", data, inicio, termino,
                  quantidade_alunos AS "quantidadeAlunos", status, observacao,
                  created_at AS "createdAt", updated_at AS "updatedAt"`,
-      [next.userId, next.labId, next.data, next.inicio, next.termino, next.quantidadeAlunos, next.status, next.observacao || "", id],
+      [
+        next.userId,
+        next.labId,
+        next.data,
+        next.inicio,
+        next.termino,
+        next.quantidadeAlunos,
+        next.status,
+        next.observacao || "",
+        id,
+      ],
     );
     return mapReservation(rows[0]);
   }
@@ -480,7 +560,9 @@ class PostgresStore {
 
 export async function createStore(config) {
   if (!config.databaseUrl) {
-    throw new Error("DATABASE_URL é obrigatória. A aplicação persiste dados exclusivamente em PostgreSQL.");
+    throw new Error(
+      "DATABASE_URL é obrigatória. A aplicação persiste dados exclusivamente em PostgreSQL.",
+    );
   }
 
   const store = new PostgresStore(config);

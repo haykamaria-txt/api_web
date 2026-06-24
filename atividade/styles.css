@@ -25,7 +25,10 @@ button {
   font: inherit;
 }
 
-h1, h2, h3, p {
+h1,
+h2,
+h3,
+p {
   margin-top: 0;
 }
 
@@ -349,7 +352,8 @@ thead {
   background: #f1f8f2;
 }
 
-th, td {
+th,
+td {
   padding: 16px;
   text-align: center;
   vertical-align: middle;

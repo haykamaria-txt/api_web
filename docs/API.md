@@ -59,10 +59,10 @@ docker compose down -v
 
 ## 3. Variáveis obrigatórias
 
-| Variável | Obrigatória | Descrição |
-|---|---:|---|
-| `JWT_SECRET` | Sim | Segredo usado para assinar os tokens JWT. Deve possuir pelo menos 32 caracteres e não pode ser um valor previsível. |
-| `DATABASE_URL` | Sim | URL de conexão com PostgreSQL usando `postgres://` ou `postgresql://`. |
+| Variável       | Obrigatória | Descrição                                                                                                           |
+| -------------- | ----------: | ------------------------------------------------------------------------------------------------------------------- |
+| `JWT_SECRET`   |         Sim | Segredo usado para assinar os tokens JWT. Deve possuir pelo menos 32 caracteres e não pode ser um valor previsível. |
+| `DATABASE_URL` |         Sim | URL de conexão com PostgreSQL usando `postgres://` ou `postgresql://`.                                              |
 
 Exemplo para execução local sem o container da aplicação:
 
@@ -79,10 +79,10 @@ A aplicação falha ao iniciar se qualquer variável obrigatória estiver ausent
 
 ## 4. Credenciais de demonstração acadêmica
 
-| Perfil | Matrícula | Senha |
-|---|---|---|
-| Administrador | `000000` | `admin123` |
-| Professor | `2026001` | `123456` |
+| Perfil        | Matrícula | Senha      |
+| ------------- | --------- | ---------- |
+| Administrador | `000000`  | `admin123` |
+| Professor     | `2026001` | `123456`   |
 
 Essas credenciais existem apenas para demonstração e avaliação acadêmica.
 
@@ -141,13 +141,13 @@ As demais rotas de perfil, consulta, calendário, problemas, inventário e acess
 
 ### Códigos comuns
 
-| Código | Significado | Exemplos |
-|---:|---|---|
-| `400` | Dados obrigatórios ausentes ou regra de validação violada | Data inválida, capacidade excedida ou antecedência insuficiente |
-| `401` | Token ausente/inválido ou credenciais incorretas | Login inválido ou acesso sem JWT |
-| `403` | Usuário autenticado sem permissão | Professor tentando cadastrar laboratório |
-| `404` | Recurso não encontrado | Laboratório, usuário, reserva ou problema inexistente |
-| `409` | Conflito de estado | Matrícula duplicada ou conflito de horário |
+| Código | Significado                                               | Exemplos                                                        |
+| -----: | --------------------------------------------------------- | --------------------------------------------------------------- |
+|  `400` | Dados obrigatórios ausentes ou regra de validação violada | Data inválida, capacidade excedida ou antecedência insuficiente |
+|  `401` | Token ausente/inválido ou credenciais incorretas          | Login inválido ou acesso sem JWT                                |
+|  `403` | Usuário autenticado sem permissão                         | Professor tentando cadastrar laboratório                        |
+|  `404` | Recurso não encontrado                                    | Laboratório, usuário, reserva ou problema inexistente           |
+|  `409` | Conflito de estado                                        | Matrícula duplicada ou conflito de horário                      |
 
 ## 8. Autenticação
 

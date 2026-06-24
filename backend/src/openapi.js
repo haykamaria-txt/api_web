@@ -40,8 +40,8 @@ const definition = {
     title: "API de Agendamento e Monitoramento de Laboratórios",
     version: "1.0.0",
     description:
-      "API REST para autenticação, usuários, laboratórios, reservas, calendário, problemas, relatórios, inventário e controle de acessos. "
-      + "Nas rotas protegidas, use o token retornado pelo login no botão Authorize.",
+      "API REST para autenticação, usuários, laboratórios, reservas, calendário, problemas, relatórios, inventário e controle de acessos. " +
+      "Nas rotas protegidas, use o token retornado pelo login no botão Authorize.",
   },
   servers: [
     { url: "/", description: "Servidor atual" },
@@ -559,7 +559,10 @@ const definition = {
         security,
         requestBody: body(ref("ReservationCreateRequest")),
         responses: {
-          201: response("Reserva criada com status pendente.", wrapped("reserva", ref("Reservation"))),
+          201: response(
+            "Reserva criada com status pendente.",
+            wrapped("reserva", ref("Reservation")),
+          ),
           400: errors[400],
           401: errors[401],
           403: errors[403],
