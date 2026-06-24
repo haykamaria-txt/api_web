@@ -21,6 +21,9 @@ backend/server.err.log
 backend/data/
 *.tmp
 *.temp
+*.bak
+*.swp
+*~
 
 # Docker local / caches
 .docker/
@@ -34,6 +37,8 @@ build/
 coverage/
 .cache/
 .vite/
+.eslintcache
+.npm/
 
 # Sistema operacional / editor
 .DS_Store
@@ -44,3 +49,6 @@ desktop.ini
 
 # Git interno acidental em zips/cópias
 .git/
+
+# Pacotes de entrega gerados
+*.zip

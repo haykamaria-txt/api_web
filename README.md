@@ -4,32 +4,64 @@ Backend REST e frontend integrado para gerenciamento de laboratórios, reservas,
 
 Documentação completa da API, payloads, respostas, permissões e regras de negócio: [docs/API.md](docs/API.md).
 
+## Requisitos
+
+- Node.js 22 ou superior;
+- npm;
+- Docker Desktop ou Docker Engine com Docker Compose;
+- portas `3000` e `5432` disponíveis.
+
+## Instalação
+
+Na raiz do projeto, instale exatamente as dependências registradas no `package-lock.json`:
+
+```bash
+npm ci
+```
+
+## Configuração do ambiente
+
+Copie o arquivo de exemplo sem remover o original:
+
+No PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+No Bash:
+
+```bash
+cp .env.example .env
+```
+
+Gere um segredo JWT aleatório:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
+```
+
+Substitua o valor de `JWT_SECRET` no `.env` pelo resultado. O arquivo deve manter esta estrutura:
+
+```env
+PORT=3000
+JWT_SECRET=<valor-aleatório-com-pelo-menos-32-caracteres>
+DATABASE_URL=postgresql://laboratorios_app:laboratorios_app@localhost:5432/laboratorios
+DB_SSL=false
+```
+
+O `.env` contém configuração local e não deve ser enviado ou versionado. Somente `.env.example` faz parte da entrega.
+
 ## Como rodar com Docker
 
 1. Instale Docker Desktop ou Docker Engine com Docker Compose.
 
-2. Gere um segredo JWT aleatório e defina `JWT_SECRET` no ambiente. Exemplo:
+2. Configure o `.env` conforme a seção anterior.
+
+3. Na raiz do projeto, suba o PostgreSQL e a aplicação:
 
    ```bash
-   node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
-   ```
-
-   No PowerShell:
-
-   ```powershell
-   $env:JWT_SECRET="<valor-gerado>"
-   ```
-
-   No Bash:
-
-   ```bash
-   export JWT_SECRET="<valor-gerado>"
-   ```
-
-3. Na raiz do projeto, suba todos os serviços:
-
-   ```bash
-   docker compose up
+   docker compose up --build
    ```
 
 4. Abra `http://localhost:3000`.
@@ -50,7 +82,13 @@ Na primeira execução, o container do PostgreSQL executa:
 
 O backend também reaplica `backend/schema.sql` na inicialização e carrega dados iniciais quando o banco está vazio.
 
-Para parar os containers, pressione `Ctrl+C`. Para remover também o volume do banco e recomeçar do zero:
+Para parar os containers:
+
+```bash
+docker compose down
+```
+
+Para remover também o volume do banco e recomeçar do zero:
 
 ```bash
 docker compose down -v
@@ -67,15 +105,10 @@ docker compose down -v
 2. Instale as dependências:
 
    ```bash
-   npm install
+   npm ci
    ```
 
-3. Copie `.env.example` para `.env`, gere um segredo aleatório e configure as variáveis obrigatórias:
-
-   ```env
-   JWT_SECRET=<valor-aleatório-com-pelo-menos-32-caracteres>
-   DATABASE_URL=postgresql://laboratorios_app:laboratorios_app@localhost:5432/laboratorios
-   ```
+3. Configure o `.env` conforme a seção “Configuração do ambiente”.
 
 4. Inicie o servidor:
 
@@ -84,6 +117,12 @@ docker compose down -v
    ```
 
 5. Abra `http://localhost:3000`.
+
+Durante o desenvolvimento, também é possível reiniciar automaticamente o servidor:
+
+```bash
+npm run dev
+```
 
 O servidor falha ao iniciar quando:
 
@@ -130,3 +169,53 @@ Para testar as rotas protegidas pela interface Swagger:
 2. Copie o valor do campo `token` retornado.
 3. Clique em **Authorize** e informe somente o token.
 4. Execute as demais rotas conforme as permissões do usuário autenticado.
+
+## Qualidade e testes
+
+Execute a suíte automatizada uma vez:
+
+```bash
+npm test
+```
+
+Execute os testes em modo de observação:
+
+```bash
+npm run test:watch
+```
+
+Verifique ou corrija problemas de lint:
+
+```bash
+npm run lint
+npm run lint:fix
+```
+
+Verifique ou aplique a formatação:
+
+```bash
+npm run format:check
+npm run format
+```
+
+## Gerar o ZIP de entrega
+
+No PowerShell, execute:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\create-delivery.ps1
+```
+
+O script cria `entrega-etapa-2.zip` na raiz, excluindo dependências, `.env`, histórico Git, logs, caches, arquivos temporários e ZIPs anteriores.
+
+## Checklist da Etapa 2
+
+- [x] Node.js/Express
+- [x] PostgreSQL
+- [x] JWT
+- [x] bcrypt
+- [x] Swagger/OpenAPI
+- [x] ESLint
+- [x] Prettier
+- [x] Testes automatizados com Vitest
+- [x] Docker e Docker Compose
