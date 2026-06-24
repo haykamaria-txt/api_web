@@ -108,3 +108,24 @@ Consulte [docs/API.md](docs/API.md) para:
 - payloads e respostas de exemplo;
 - códigos de erro;
 - regras de negócio e proteção transacional das reservas.
+
+### Swagger / OpenAPI
+
+Com a aplicação em execução, acesse a documentação interativa em:
+
+```text
+http://localhost:3000/api-docs
+```
+
+A especificação OpenAPI em JSON está disponível em:
+
+```text
+http://localhost:3000/api-docs.json
+```
+
+Para testar as rotas protegidas pela interface Swagger:
+
+1. Execute `POST /autenticacao/login`.
+2. Copie o valor do campo `token` retornado.
+3. Clique em **Authorize** e informe somente o token.
+4. Execute as demais rotas conforme as permissões do usuário autenticado.

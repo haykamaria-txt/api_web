@@ -1,8 +1,10 @@
 import cors from "cors";
 import express from "express";
 import path from "path";
+import swaggerUi from "swagger-ui-express";
 import { fileURLToPath } from "url";
 import { config } from "./config.js";
+import { openapiSpec } from "./openapi.js";
 import { createStore } from "./store.js";
 import { createToken, hashPassword, verifyPassword, verifyToken } from "./security.js";
 
@@ -97,6 +99,19 @@ async function createApp() {
 
   app.use(cors());
   app.use(express.json());
+  app.get("/api-docs.json", (req, res) => {
+    res.json(openapiSpec);
+  });
+  app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(openapiSpec, {
+      customSiteTitle: "Documentação da API de Laboratórios",
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
+    }),
+  );
 
   async function auth(req, res, next) {
     try {
