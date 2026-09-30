@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 
 $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 if (-not $OutputPath) {
-  $OutputPath = Join-Path $projectRoot "entrega-etapa-2.zip"
+  $OutputPath = Join-Path $projectRoot "entrega-etapa-3.zip"
 }
 
 $outputFullPath = [System.IO.Path]::GetFullPath($OutputPath)

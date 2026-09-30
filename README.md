@@ -1,19 +1,37 @@
 # Sistema de Agendamento e Monitoramento de Laboratórios Acadêmicos
 
-Backend REST e frontend integrado para gerenciamento de laboratórios, reservas, problemas e relatórios.
-
-Documentação completa da API, payloads, respostas, permissões e regras de negócio: [docs/API.md](docs/API.md).
+Aplicação web para gerenciar laboratórios, reservas, problemas, inventário e registros de acesso. O backend usa Node.js, Express, PostgreSQL e Sequelize, organizado em camadas.
 
 ## Requisitos
 
-- Node.js 22 ou superior;
-- npm;
+- Node.js 22 ou superior e npm;
 - Docker Desktop ou Docker Engine com Docker Compose;
 - portas `3000` e `5432` disponíveis.
 
+## Arquitetura
+
+As requisições seguem o fluxo `Route → Controller → Service → Repository → Model → PostgreSQL`:
+
+- **Routes** associam endpoints HTTP aos Controllers;
+- **Controllers** leem a requisição e montam a resposta;
+- **Services** aplicam validações, permissões e regras de negócio;
+- **Repositories** fazem operações CRUD pelos Models Sequelize;
+- **Models** mapeiam tabelas, colunas, constraints e relacionamentos;
+- **`backend/src/config/database.js`** configura a conexão com PostgreSQL usando variáveis de ambiente.
+
+As entidades persistidas são usuários, laboratórios, reservas, problemas, inventário e acessos. A estrutura principal está em `backend/src/`; a definição SQL usada na inicialização de um banco novo está em `backend/schema.sql`.
+
+### Modelagem de dados
+
+- [MER — Modelo Entidade-Relacionamento](docs/MER.md)
+- [Diagrama de Classes](docs/Diagrama-de-Classes.md)
+- [Schema PostgreSQL](backend/schema.sql)
+
+Os dois diagramas usam Mermaid e podem ser visualizados em leitores compatíveis, como o GitHub.
+
 ## Instalação
 
-Na raiz do projeto, instale exatamente as dependências registradas no `package-lock.json`:
+Na raiz do projeto, instale as dependências do lockfile:
 
 ```bash
 npm ci
@@ -21,18 +39,10 @@ npm ci
 
 ## Configuração do ambiente
 
-Copie o arquivo de exemplo sem remover o original:
-
-No PowerShell:
+Crie um arquivo local `.env` a partir do exemplo:
 
 ```powershell
 Copy-Item .env.example .env
-```
-
-No Bash:
-
-```bash
-cp .env.example .env
 ```
 
 Gere um segredo JWT aleatório:
@@ -41,181 +51,122 @@ Gere um segredo JWT aleatório:
 node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
 ```
 
-Substitua o valor de `JWT_SECRET` no `.env` pelo resultado. O arquivo deve manter esta estrutura:
+Copie o resultado para `JWT_SECRET` no `.env`. O segredo deve ter pelo menos 32 caracteres. Exemplo da configuração local:
 
 ```env
 PORT=3000
-JWT_SECRET=<valor-aleatório-com-pelo-menos-32-caracteres>
+JWT_SECRET=<segredo-aleatório-com-pelo-menos-32-caracteres>
 DATABASE_URL=postgresql://laboratorios_app:laboratorios_app@localhost:5432/laboratorios
 DB_SSL=false
 ```
 
-O `.env` contém configuração local e não deve ser enviado ou versionado. Somente `.env.example` faz parte da entrega.
+O `.env` contém segredos e configurações locais; não o envie nem o versione. O arquivo `.env.example` pode ser compartilhado.
 
-## Como rodar com Docker
+## Executar com Docker Compose
 
-1. Instale Docker Desktop ou Docker Engine com Docker Compose.
-
-2. Configure o `.env` conforme a seção anterior.
-
-3. Na raiz do projeto, suba o PostgreSQL e a aplicação:
+1. Configure o `.env` conforme a seção anterior.
+2. Na raiz do projeto, construa e inicie a aplicação e o PostgreSQL:
 
    ```bash
    docker compose up --build
    ```
 
-4. Abra `http://localhost:3000`.
+3. Acesse a aplicação em <http://localhost:3000>.
 
-O comando acima sobe dois serviços:
+O Compose inicia o PostgreSQL 16 e a aplicação Express. A API usa a conexão PostgreSQL fornecida por `DATABASE_URL`; o Compose não oferece um segredo JWT padrão e exige que `JWT_SECRET` esteja configurado.
 
-- `postgres`: PostgreSQL 16 com banco `laboratorios`.
-- `app`: backend Node/Express servindo a API e o frontend.
+Em um volume PostgreSQL novo, os scripts em `backend/db/init/` criam o banco e aplicam `backend/schema.sql`. Na inicialização da API, o Sequelize autentica a conexão e sincroniza os Models sem alterar tabelas existentes. Dados de demonstração são carregados quando o banco está vazio. Volumes já inicializados não reaplicam os scripts de bootstrap.
 
-O PostgreSQL é obrigatório para atender ao RNF04. No Docker Compose, a aplicação recebe `DATABASE_URL=postgresql://laboratorios_app:laboratorios_app@postgres:5432/laboratorios` e não usa armazenamento em arquivo JSON.
-
-O Compose não inclui segredo JWT padrão. Ele interrompe a configuração se `JWT_SECRET` não estiver definida. Use um valor aleatório exclusivo mesmo em avaliação local; nunca reutilize o exemplo, credenciais ou segredos de outro ambiente.
-
-Na primeira execução, o container do PostgreSQL executa:
-
-- `backend/db/init/01-create-database.sh`: cria o usuário `laboratorios_app`, cria o banco `laboratorios` e ajusta permissões.
-- `backend/db/init/02-init-tables.sh`: aplica `backend/schema.sql` para inicializar as tabelas.
-
-Na inicialização, o Sequelize sincroniza os Models sem alterar tabelas já existentes e carrega dados iniciais quando o banco está vazio. Em uma instalação Docker nova, `backend/schema.sql` continua sendo aplicado pelo script de inicialização do PostgreSQL.
-
-Para parar os containers:
+Para parar os serviços, execute:
 
 ```bash
 docker compose down
 ```
 
-Para remover também o volume do banco e recomeçar do zero:
+Para apagar também os dados persistidos e reiniciar o banco do zero:
 
 ```bash
 docker compose down -v
 ```
 
-## Como rodar localmente sem container da aplicação
+Esse último comando remove o volume do PostgreSQL.
 
-1. Suba um PostgreSQL local ou use apenas o servico `postgres` do Compose:
+## Executar localmente
+
+1. Instale as dependências com `npm ci` e configure o `.env` para apontar a `DATABASE_URL` ao PostgreSQL.
+2. Inicie um PostgreSQL local ou o serviço de banco do Compose e mantenha-o em execução:
 
    ```bash
    docker compose up postgres
    ```
 
-2. Instale as dependências:
-
-   ```bash
-   npm ci
-   ```
-
-3. Configure o `.env` conforme a seção “Configuração do ambiente”.
-
-4. Inicie o servidor:
+3. Em outro terminal, inicie a API:
 
    ```bash
    npm start
    ```
 
-5. Abra `http://localhost:3000`.
-
-Durante o desenvolvimento, também é possível reiniciar automaticamente o servidor:
+Durante o desenvolvimento, use o reinício automático:
 
 ```bash
 npm run dev
 ```
 
-O servidor falha ao iniciar quando:
+A aplicação não inicia sem um `JWT_SECRET` válido e uma `DATABASE_URL` PostgreSQL. Para interromper o servidor local, use `Ctrl+C`.
 
-- `JWT_SECRET` está ausente ou vazia;
-- `JWT_SECRET` tem menos de 32 caracteres ou contém termos previsíveis de exemplo/desenvolvimento;
-- `DATABASE_URL` está ausente ou não usa `postgres://`/`postgresql://`.
+## Acessos de demonstração
 
-## Acessos de demonstração acadêmica
+- Administrador: matrícula `000000`, senha `admin123`;
+- Professor: matrícula `2026001`, senha `123456`.
 
-- Administrador: matrícula `000000`, senha `admin123`
-- Professor: matrícula `2026001`, senha `123456`
-
-Essas credenciais existem apenas para demonstração e avaliação acadêmica. A matrícula e a senha precisam ser digitadas manualmente na tela de login; o sistema não preenche campos nem autentica automaticamente.
+Essas contas são destinadas somente à demonstração acadêmica. A tela de login não preenche credenciais nem autentica automaticamente.
 
 ## Documentação da API
 
-Consulte [docs/API.md](docs/API.md) para:
+Consulte [docs/API.md](docs/API.md) para endpoints, permissões, exemplos de payloads e respostas, erros e regras de negócio.
 
-- execução com Docker e configuração das variáveis obrigatórias;
-- autenticação JWT e credenciais de demonstração acadêmica;
-- senhas protegidas com bcrypt usando 12 salt rounds;
-- lista completa de endpoints e permissões;
-- payloads e respostas de exemplo;
-- códigos de erro;
-- regras de negócio e proteção transacional das reservas.
+Com a aplicação em execução, a documentação interativa está em <http://localhost:3000/api-docs> e o JSON OpenAPI em <http://localhost:3000/api-docs.json>.
 
-### Swagger / OpenAPI
-
-Com a aplicação em execução, acesse a documentação interativa em:
-
-```text
-http://localhost:3000/api-docs
-```
-
-A especificação OpenAPI em JSON está disponível em:
-
-```text
-http://localhost:3000/api-docs.json
-```
-
-Para testar as rotas protegidas pela interface Swagger:
+Para testar uma rota protegida no Swagger:
 
 1. Execute `POST /autenticacao/login`.
-2. Copie o valor do campo `token` retornado.
-3. Clique em **Authorize** e informe somente o token.
-4. Execute as demais rotas conforme as permissões do usuário autenticado.
+2. Copie o campo `token` da resposta.
+3. Clique em **Authorize** e informe o token.
+4. Execute a rota desejada com a conta apropriada.
 
 ## Qualidade e testes
 
-Execute a suíte automatizada uma vez:
+Execute os testes automatizados:
 
 ```bash
 npm test
 ```
 
-Execute os testes em modo de observação:
-
-```bash
-npm run test:watch
-```
-
-Verifique ou corrija problemas de lint:
+Verifique o lint e a formatação:
 
 ```bash
 npm run lint
-npm run lint:fix
-```
-
-Verifique ou aplique a formatação:
-
-```bash
 npm run format:check
-npm run format
 ```
 
-## Gerar o ZIP de entrega
+## Checklist da Etapa 3
 
-No PowerShell, execute:
+- [x] PostgreSQL e Sequelize configurados por variáveis de ambiente;
+- [x] Models e mapeamentos implementados para as entidades do sistema;
+- [x] Relacionamentos entre usuários, laboratórios, reservas, problemas, inventário e acessos;
+- [x] CRUD pelos Repositories Sequelize;
+- [x] Validações e regras de negócio nos Services;
+- [x] Integração da API pelo fluxo Controller → Service → Repository → Model;
+- [x] MER e Diagrama de Classes incluídos na documentação;
+- [x] Aplicação e persistência validadas localmente com PostgreSQL;
+- [ ] Demonstrar a aplicação funcionando durante a apresentação.
+
+## Gerar o pacote de entrega
+
+No PowerShell, gere o ZIP da Etapa 3:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\create-delivery.ps1
 ```
 
-O script cria `entrega-etapa-2.zip` na raiz, excluindo dependências, `.env`, histórico Git, logs, caches, arquivos temporários e ZIPs anteriores.
-
-## Checklist da Etapa 2
-
-- [x] Node.js/Express
-- [x] PostgreSQL
-- [x] JWT
-- [x] bcrypt
-- [x] Swagger/OpenAPI
-- [x] ESLint
-- [x] Prettier
-- [x] Testes automatizados com Vitest
-- [x] Docker e Docker Compose
+O script cria `entrega-etapa-3.zip` na raiz. O pacote exclui dependências instaladas, `.env`, histórico Git, caches, logs, arquivos temporários e ZIPs anteriores.
