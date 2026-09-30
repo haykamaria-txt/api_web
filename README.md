@@ -80,7 +80,7 @@ Na primeira execução, o container do PostgreSQL executa:
 - `backend/db/init/01-create-database.sh`: cria o usuário `laboratorios_app`, cria o banco `laboratorios` e ajusta permissões.
 - `backend/db/init/02-init-tables.sh`: aplica `backend/schema.sql` para inicializar as tabelas.
 
-O backend também reaplica `backend/schema.sql` na inicialização e carrega dados iniciais quando o banco está vazio.
+Na inicialização, o Sequelize sincroniza os Models sem alterar tabelas já existentes e carrega dados iniciais quando o banco está vazio. Em uma instalação Docker nova, `backend/schema.sql` continua sendo aplicado pelo script de inicialização do PostgreSQL.
 
 Para parar os containers:
 
