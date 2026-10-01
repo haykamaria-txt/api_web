@@ -41,9 +41,9 @@ erDiagram
         date data
         time inicio
         time termino
-        int quantidade_alunos
+        int quantidade_alunos "NULL permitido"
         varchar status
-        text observacao
+        text observacao "NULL permitido"
         timestamp created_at
         timestamp updated_at
     }
@@ -75,4 +75,4 @@ erDiagram
     }
 ```
 
-Restrições relevantes: matrícula única; perfil em `admin|professor`; capacidade maior que zero; quantidade de alunos, quando informada, maior que zero; início anterior ao término; status da reserva em `pendente|aprovada|rejeitada|cancelada`; status do problema em `aberto|em_andamento|resolvido`; tipo de acesso em `checkin|checkout`; contagens do inventário não negativas. As FKs usam `NO ACTION` em exclusão e atualização.
+Restrições relevantes: matrícula única; perfil em `admin|professor`; capacidade maior que zero; quantidade de alunos, quando informada, maior que zero; início anterior ao término; status da reserva em `pendente|aprovada|rejeitada|cancelada`; status do problema em `aberto|em_andamento|resolvido`; tipo de acesso em `checkin|checkout`; contagens do inventário não negativas. As FKs usam `NO ACTION` em exclusão e atualização. A tabela `acessos` não possui `updated_at`.

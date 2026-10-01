@@ -27,7 +27,157 @@ As entidades persistidas são usuários, laboratórios, reservas, problemas, inv
 - [Diagrama de Classes](docs/Diagrama-de-Classes.md)
 - [Schema PostgreSQL](backend/schema.sql)
 
-Os dois diagramas usam Mermaid e podem ser visualizados em leitores compatíveis, como o GitHub.
+Os diagramas abaixo refletem as tabelas e associações implementadas em `backend/schema.sql` e nos Models Sequelize. Os campos `userId` e `labId` dos Models são mapeados para `usuario_id` e `laboratorio_id` no banco.
+
+#### Modelo Entidade-Relacionamento
+
+```mermaid
+erDiagram
+    USUARIOS ||--o{ RESERVAS : realiza
+    LABORATORIOS ||--o{ RESERVAS : recebe
+    USUARIOS ||--o{ PROBLEMAS : relata
+    LABORATORIOS ||--o{ PROBLEMAS : apresenta
+    LABORATORIOS ||--o{ INVENTARIO : possui
+    USUARIOS ||--o{ ACESSOS : registra
+    LABORATORIOS ||--o{ ACESSOS : registra
+
+    USUARIOS {
+        int id PK
+        varchar nome
+        varchar matricula UK
+        varchar curso
+        varchar perfil
+        text senha_hash
+        boolean ativo
+        timestamp created_at
+        timestamp updated_at
+    }
+    LABORATORIOS {
+        int id PK
+        varchar nome
+        varchar tipo
+        int capacidade
+        varchar localizacao
+        jsonb recursos
+        boolean ativo
+        timestamp created_at
+        timestamp updated_at
+    }
+    RESERVAS {
+        int id PK
+        int usuario_id FK
+        int laboratorio_id FK
+        date data
+        time inicio
+        time termino
+        int quantidade_alunos "NULL permitido"
+        varchar status
+        text observacao "NULL permitido"
+        timestamp created_at
+        timestamp updated_at
+    }
+    PROBLEMAS {
+        int id PK
+        int laboratorio_id FK
+        int usuario_id FK
+        varchar tipo
+        text descricao
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+    INVENTARIO {
+        int id PK
+        int laboratorio_id FK
+        varchar item
+        int disponivel
+        int indisponivel
+        timestamp created_at
+        timestamp updated_at
+    }
+    ACESSOS {
+        int id PK
+        int laboratorio_id FK
+        int usuario_id FK
+        varchar tipo
+        timestamp created_at
+    }
+```
+
+#### Diagrama de Classes dos Models
+
+```mermaid
+classDiagram
+    class Usuario {
+        +Integer id
+        +String nome
+        +String matricula
+        +String curso
+        +String role
+        +String passwordHash
+        +Boolean ativo
+        +Date createdAt
+        +Date updatedAt
+    }
+    class Laboratorio {
+        +Integer id
+        +String nome
+        +String tipo
+        +Integer capacidade
+        +String localizacao
+        +JSON recursos
+        +Boolean ativo
+        +Date createdAt
+        +Date updatedAt
+    }
+    class Reserva {
+        +Integer id
+        +Integer userId
+        +Integer labId
+        +Date data
+        +Time inicio
+        +Time termino
+        +Integer quantidadeAlunos
+        +String status
+        +String observacao
+        +Date createdAt
+        +Date updatedAt
+    }
+    class Problema {
+        +Integer id
+        +Integer labId
+        +Integer userId
+        +String tipo
+        +String descricao
+        +String status
+        +Date createdAt
+        +Date updatedAt
+    }
+    class Inventario {
+        +Integer id
+        +Integer labId
+        +String item
+        +Integer disponivel
+        +Integer indisponivel
+        +Date createdAt
+        +Date updatedAt
+    }
+    class Acesso {
+        +Integer id
+        +Integer labId
+        +Integer userId
+        +String tipo
+        +Date createdAt
+    }
+
+    Usuario "1" --> "0..*" Reserva : reservas
+    Laboratorio "1" --> "0..*" Reserva : reservas
+    Usuario "1" --> "0..*" Problema : problemas
+    Laboratorio "1" --> "0..*" Problema : problemas
+    Laboratorio "1" --> "0..*" Inventario : inventario
+    Usuario "1" --> "0..*" Acesso : acessos
+    Laboratorio "1" --> "0..*" Acesso : acessos
+```
 
 ## Instalação
 
