@@ -1,71 +1,99 @@
 # Diagrama de Classes do domínio
 
-Classes persistentes correspondentes aos Models Sequelize e associações definidas em `backend/src/models/index.js`.
+Diagrama atualizado conforme a modelagem de referência do projeto, com atributos, operações e herança de `Professor` para `Usuario`.
 
 ```mermaid
 classDiagram
     class Usuario {
-        +Integer id
+        +int id_usuario
         +String nome
         +String matricula
         +String curso
-        +String role
-        +String passwordHash
+        +String perfil
+        +String senha
         +Boolean ativo
-        +Date createdAt
-        +Date updatedAt
+        +realizarLogin() Boolean
+        +visualizarPerfil() void
+        +atualizarDados() void
+        +alterarSenha() void
+    }
+    class Professor {
+        +int id_professor
+        +String titular
+        +String departamento
+        +solicitarReserva() void
+        +cancelarReserva() void
+        +relatarProblema() void
+    }
+    class Reserva {
+        +int id_reserva
+        +int id_usuario
+        +int id_laboratorio
+        +DateTime data_inicio
+        +DateTime data_fim
+        +String status
+        +int quantidade_alunos
+        +criarReserva() void
+        +editarReserva() void
+        +consultarReserva() void
+        +verificarDisponibilidade() Boolean
+        +aprovarReserva() void
+        +rejeitarReserva() void
     }
     class Laboratorio {
-        +Integer id
+        +int id_laboratorio
         +String nome
+        +int capacidade
         +String tipo
-        +Integer capacidade
         +String localizacao
         +JSON recursos
         +Boolean ativo
-        +Date createdAt
-        +Date updatedAt
-    }
-    class Reserva {
-        +Integer id
-        +Integer userId
-        +Integer labId
-        +Date data
-        +Time inicio
-        +Time termino
-        +Integer quantidadeAlunos
         +String status
-        +String observacao
-        +Date createdAt
-        +Date updatedAt
+        +cadastrarLaboratorio() void
+        +consultarLaboratorio() void
+        +atualizarLaboratorio() void
+        +removerLaboratorio() void
+        +verificarDisponibilidade() Boolean
     }
     class Problema {
-        +Integer id
-        +Integer labId
-        +Integer userId
-        +String tipo
+        +int id_problema
+        +int id_usuario
+        +int id_laboratorio
+        +String titulo
         +String descricao
+        +DateTime data_inicio
+        +DateTime data_fim
         +String status
-        +Date createdAt
-        +Date updatedAt
+        +registrarProblema() void
+        +consultarProblema() void
+        +atualizarProblema() void
+        +removerProblema() void
     }
     class Inventario {
-        +Integer id
-        +Integer labId
-        +String item
-        +Integer disponivel
-        +Integer indisponivel
-        +Date createdAt
-        +Date updatedAt
+        +int id_inventario
+        +int id_laboratorio
+        +String nome
+        +String tipo
+        +int quantidade
+        +String status
+        +cadastrarItem() void
+        +atualizarItem() void
+        +removerItem() void
+        +consultarItem() void
+        +verificarEstoque() Boolean
     }
     class Acesso {
-        +Integer id
-        +Integer labId
-        +Integer userId
+        +int id_acesso
+        +int id_usuario
+        +int id_laboratorio
+        +DateTime data_hora
         +String tipo
-        +Date createdAt
+        +registrarAcesso() void
+        +consultarAcesso() void
+        +listarAcessos() void
     }
 
+    Usuario <|-- Professor
     Usuario "1" --> "0..*" Reserva : reservas
     Laboratorio "1" --> "0..*" Reserva : reservas
     Usuario "1" --> "0..*" Problema : problemas
@@ -74,5 +102,3 @@ classDiagram
     Usuario "1" --> "0..*" Acesso : acessos
     Laboratorio "1" --> "0..*" Acesso : acessos
 ```
-
-`role`, `passwordHash`, `userId`, `labId` e `quantidadeAlunos` são nomes usados nos Models; Sequelize os mapeia para as colunas SQL `perfil`, `senha_hash`, `usuario_id`, `laboratorio_id` e `quantidade_alunos`, respectivamente. `Acesso` não tem `updatedAt`, de acordo com a tabela `acessos`.

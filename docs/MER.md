@@ -1,6 +1,6 @@
 # Modelo Entidade-Relacionamento
 
-MER da aplicação de gestão de laboratórios, derivado de `backend/schema.sql`.
+MER atualizado conforme a modelagem de referência do projeto.
 
 ```mermaid
 erDiagram
@@ -13,66 +13,56 @@ erDiagram
     LABORATORIOS ||--o{ ACESSOS : registra
 
     USUARIOS {
-        int id PK
-        varchar nome
+        int id_usuario PK
+        varchar nome "160"
         varchar matricula UK
-        varchar curso
-        varchar perfil
-        text senha_hash
+        varchar curso "120"
+        varchar perfil "20"
+        text senha
         boolean ativo
-        timestamp created_at
-        timestamp updated_at
     }
     LABORATORIOS {
-        int id PK
-        varchar nome
-        varchar tipo
+        int id_laboratorio PK
+        varchar nome "160"
         int capacidade
-        varchar localizacao
+        varchar tipo "120"
+        varchar localizacao "160"
         jsonb recursos
         boolean ativo
-        timestamp created_at
-        timestamp updated_at
+        varchar status "20"
     }
     RESERVAS {
-        int id PK
-        int usuario_id FK
-        int laboratorio_id FK
-        date data
-        time inicio
-        time termino
-        int quantidade_alunos "NULL permitido"
-        varchar status
-        text observacao "NULL permitido"
-        timestamp created_at
-        timestamp updated_at
+        int id_reserva PK
+        int id_usuario FK
+        int id_laboratorio FK
+        datetime data_inicio
+        datetime data_fim
+        varchar status "20"
+        int quantidade_alunos
     }
     PROBLEMAS {
-        int id PK
-        int laboratorio_id FK
-        int usuario_id FK
-        varchar tipo
+        int id_problema PK
+        int id_usuario FK
+        int id_laboratorio FK
+        varchar titulo "120"
         text descricao
-        varchar status
-        timestamp created_at
-        timestamp updated_at
-    }
-    INVENTARIO {
-        int id PK
-        int laboratorio_id FK
-        varchar item
-        int disponivel
-        int indisponivel
-        timestamp created_at
-        timestamp updated_at
+        datetime data_inicio
+        datetime data_fim
+        varchar status "20"
     }
     ACESSOS {
-        int id PK
-        int laboratorio_id FK
-        int usuario_id FK
-        varchar tipo
-        timestamp created_at
+        int id_acesso PK
+        int id_usuario FK
+        int id_laboratorio FK
+        datetime data_hora
+        varchar tipo "120"
+    }
+    INVENTARIO {
+        int id_inventario PK
+        int id_laboratorio FK
+        varchar nome "160"
+        varchar tipo "120"
+        int quantidade
+        varchar status "20"
     }
 ```
-
-Restrições relevantes: matrícula única; perfil em `admin|professor`; capacidade maior que zero; quantidade de alunos, quando informada, maior que zero; início anterior ao término; status da reserva em `pendente|aprovada|rejeitada|cancelada`; status do problema em `aberto|em_andamento|resolvido`; tipo de acesso em `checkin|checkout`; contagens do inventário não negativas. As FKs usam `NO ACTION` em exclusão e atualização. A tabela `acessos` não possui `updated_at`.

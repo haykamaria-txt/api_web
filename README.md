@@ -27,7 +27,7 @@ As entidades persistidas são usuários, laboratórios, reservas, problemas, inv
 - [Diagrama de Classes](docs/Diagrama-de-Classes.md)
 - [Schema PostgreSQL](backend/schema.sql)
 
-Os diagramas abaixo refletem as tabelas e associações implementadas em `backend/schema.sql` e nos Models Sequelize. Os campos `userId` e `labId` dos Models são mapeados para `usuario_id` e `laboratorio_id` no banco.
+Os diagramas Mermaid abaixo foram atualizados para a modelagem apresentada nesta documentação. O schema implementado no banco permanece descrito em [backend/schema.sql](backend/schema.sql).
 
 #### Modelo Entidade-Relacionamento
 
@@ -42,65 +42,57 @@ erDiagram
     LABORATORIOS ||--o{ ACESSOS : registra
 
     USUARIOS {
-        int id PK
-        varchar nome
+        int id_usuario PK
+        varchar nome "160"
         varchar matricula UK
-        varchar curso
-        varchar perfil
-        text senha_hash
+        varchar curso "120"
+        varchar perfil "20"
+        text senha
         boolean ativo
-        timestamp created_at
-        timestamp updated_at
     }
     LABORATORIOS {
-        int id PK
-        varchar nome
-        varchar tipo
+        int id_laboratorio PK
+        varchar nome "160"
         int capacidade
-        varchar localizacao
+        varchar tipo "120"
+        varchar localizacao "160"
         jsonb recursos
         boolean ativo
-        timestamp created_at
-        timestamp updated_at
+        varchar status "20"
     }
     RESERVAS {
-        int id PK
-        int usuario_id FK
-        int laboratorio_id FK
-        date data
-        time inicio
-        time termino
-        int quantidade_alunos "NULL permitido"
-        varchar status
-        text observacao "NULL permitido"
-        timestamp created_at
-        timestamp updated_at
+        int id_reserva PK
+        int id_usuario FK
+        int id_laboratorio FK
+        datetime data_inicio
+        datetime data_fim
+        varchar status "20"
+        int quantidade_alunos
     }
     PROBLEMAS {
-        int id PK
-        int laboratorio_id FK
-        int usuario_id FK
-        varchar tipo
+        int id_problema PK
+        int id_usuario FK
+        int id_laboratorio FK
+        varchar titulo "120"
         text descricao
-        varchar status
-        timestamp created_at
-        timestamp updated_at
+        datetime data_inicio
+        datetime data_fim
+        varchar status "20"
     }
     INVENTARIO {
-        int id PK
-        int laboratorio_id FK
-        varchar item
-        int disponivel
-        int indisponivel
-        timestamp created_at
-        timestamp updated_at
+        int id_inventario PK
+        int id_laboratorio FK
+        varchar nome "160"
+        varchar tipo "120"
+        int quantidade
+        varchar status "20"
     }
     ACESSOS {
-        int id PK
-        int laboratorio_id FK
-        int usuario_id FK
-        varchar tipo
-        timestamp created_at
+        int id_acesso PK
+        int id_usuario FK
+        int id_laboratorio FK
+        datetime data_hora
+        varchar tipo "120"
     }
 ```
 
@@ -109,67 +101,95 @@ erDiagram
 ```mermaid
 classDiagram
     class Usuario {
-        +Integer id
+        +int id_usuario
         +String nome
         +String matricula
         +String curso
-        +String role
-        +String passwordHash
+        +String perfil
+        +String senha
         +Boolean ativo
-        +Date createdAt
-        +Date updatedAt
+        +realizarLogin() Boolean
+        +visualizarPerfil() void
+        +atualizarDados() void
+        +alterarSenha() void
+    }
+    class Professor {
+        +int id_professor
+        +String titular
+        +String departamento
+        +solicitarReserva() void
+        +cancelarReserva() void
+        +relatarProblema() void
     }
     class Laboratorio {
-        +Integer id
+        +int id_laboratorio
         +String nome
+        +int capacidade
         +String tipo
-        +Integer capacidade
         +String localizacao
         +JSON recursos
         +Boolean ativo
-        +Date createdAt
-        +Date updatedAt
+        +String status
+        +cadastrarLaboratorio() void
+        +consultarLaboratorio() void
+        +atualizarLaboratorio() void
+        +removerLaboratorio() void
+        +verificarDisponibilidade() Boolean
     }
     class Reserva {
-        +Integer id
-        +Integer userId
-        +Integer labId
-        +Date data
-        +Time inicio
-        +Time termino
-        +Integer quantidadeAlunos
+        +int id_reserva
+        +int id_usuario
+        +int id_laboratorio
+        +DateTime data_inicio
+        +DateTime data_fim
         +String status
-        +String observacao
-        +Date createdAt
-        +Date updatedAt
+        +int quantidade_alunos
+        +criarReserva() void
+        +editarReserva() void
+        +consultarReserva() void
+        +verificarDisponibilidade() Boolean
+        +aprovarReserva() void
+        +rejeitarReserva() void
     }
     class Problema {
-        +Integer id
-        +Integer labId
-        +Integer userId
-        +String tipo
+        +int id_problema
+        +int id_usuario
+        +int id_laboratorio
+        +String titulo
         +String descricao
+        +DateTime data_inicio
+        +DateTime data_fim
         +String status
-        +Date createdAt
-        +Date updatedAt
+        +registrarProblema() void
+        +consultarProblema() void
+        +atualizarProblema() void
+        +removerProblema() void
     }
     class Inventario {
-        +Integer id
-        +Integer labId
-        +String item
-        +Integer disponivel
-        +Integer indisponivel
-        +Date createdAt
-        +Date updatedAt
+        +int id_inventario
+        +int id_laboratorio
+        +String nome
+        +String tipo
+        +int quantidade
+        +String status
+        +cadastrarItem() void
+        +atualizarItem() void
+        +removerItem() void
+        +consultarItem() void
+        +verificarEstoque() Boolean
     }
     class Acesso {
-        +Integer id
-        +Integer labId
-        +Integer userId
+        +int id_acesso
+        +int id_usuario
+        +int id_laboratorio
+        +DateTime data_hora
         +String tipo
-        +Date createdAt
+        +registrarAcesso() void
+        +consultarAcesso() void
+        +listarAcessos() void
     }
 
+    Usuario <|-- Professor
     Usuario "1" --> "0..*" Reserva : reservas
     Laboratorio "1" --> "0..*" Reserva : reservas
     Usuario "1" --> "0..*" Problema : problemas
